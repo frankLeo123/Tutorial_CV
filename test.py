@@ -257,5 +257,3 @@ while (True):
     cv2.imshow('circle',image1)
     if cv2.waitKey(1) == 27:
         break
-#     # plt.imshow(img)
-#     # plt.show()
