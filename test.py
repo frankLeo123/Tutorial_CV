@@ -204,56 +204,41 @@ import numpy as np
 # cv2.imshow("res",res)
 # cv2.waitKey(0)
 
-def nothing(x):
-    pass
+img = cv2.imread('./debug/abc.jpg',0)
 
-img = cv2.imread('./debug/circle_ring.jpg',1)
-gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-# cv2.imshow("demo",gray)
+_,img = cv2.threshold(img,50,255,cv2.THRESH_BINARY_INV)
+# cv2.imshow('demo',img_)
 # cv2.waitKey(0)
-_,thresh = cv2.threshold(gray,100,255,cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-image,contours,hierachy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-# print(contours[2:])
-image_ = np.copy(img)
-cv2.drawContours(image_,contours[2],-1,(0,0,255),-1)
-cv2.drawContours(image_,contours[4],-1,(0,0,255),-1)
-cv2.drawContours(image_,contours[6],-1,(0,0,255),-1)
-# dst = np.hstack((img,image_))
-cv2.imshow("demo",image_)
+image, contour, _ = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+
+a, b, c = contour[5], contour[1], contour[4]
+image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+image_ = np.copy(image)
+cv2.drawContours(image_,contour,5,(0,0,255),5)
+cv2.drawContours(image_,contour,1,(0,255,0),5)
+cv2.drawContours(image_,contour,4,(255,0,0),5)
+
+# cv2.imshow('demo',image_)
+# cv2.waitKey(0)
+
+# 面积
+# area, arc = cv2.contourArea(a),cv2.arcLength(a,True)
+# print(area,arc)
+
+# 矩形
+# x, y, w, h = cv2.boundingRect(a)
+# cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),4)
+
+# 圆形
+# (x,y), radius  = cv2.minEnclosingCircle(a)
+# x,y,radius = np.int0(x),np.int0(y),np.int0(radius)
+# cv2.circle(image,(x,y),radius,(0,0,255),5)
+# approx = cv2.approxPolyDP(contour[0],3,True)
+approx = cv2.convexHull(b)
+cv2.polylines(image, [approx], True , (0,0,255), 4)
+cv2.imshow('rect',image)
 cv2.waitKey(0)
-contour = image_[:,:,2]
-mask = cv2.inRange(contour,254,255)
-# cv2.imshow("demo",mask)
-# cv2.waitKey(0)
-# mask_canny = cv2.Canny(mask,100,30)
-# dst = np.hstack((mask_canny,mask))
-cv2.namedWindow("circle")
-cv2.createTrackbar('param1','circle',120,200,nothing)
-cv2.createTrackbar('param2','circle',12,200,nothing)
-cv2.createTrackbar('minRadius','circle',22,30,nothing)
-cv2.createTrackbar('maxRadius','circle',43,100,nothing)
 
-while (True):
-    image1 = np.copy(img)
-    param1 = cv2.getTrackbarPos('param1', 'circle')
-    param2 = cv2.getTrackbarPos('param2', 'circle')
-    minRadius = cv2.getTrackbarPos('minRadius', 'circle')
-    maxRadius = cv2.getTrackbarPos('maxRadius', 'circle')
-    circle = cv2.HoughCircles(mask,cv2.HOUGH_GRADIENT,1,5,param1=param1,param2=param2,minRadius=minRadius,maxRadius=maxRadius)
-# 缩小一倍
-# circle = cv2.HoughCircles(edges,cv2.HOUGH_GRADIENT,1,5,param1=param_Hough1,param2=param_Hough2,minRadius=20//2,maxRadius=25//2)
-    num_circle = 0
-    if circle is not None:
-        circle = np.uint16(np.around(circle[0,:,:]))
-        for i in circle[:]:
-            # Draw outer circle
-            cv2.circle(image1, (i[0], i[1]), i[2], (215, 215, 180), 3)
-            # Draw inner circle
-            cv2.circle(image1, (i[0], i[1]), 2, (215, 215, 180), 3)
-            num_circle = num_circle + 1
-        print(num_circle)
-        # cv2.putText(img,str(num_circle),(img.shape[1]//3,img.shape[0]//7),6,4,(0,0,0))
-    # img_ = cv2.cvtColor(img_, cv2.COLOR_BGR2GRAY)
-    cv2.imshow('circle',image1)
-    if cv2.waitKey(1) == 27:
-        break
+# print(cv2.matchShapes(a, a, 1, 0.0))
+# print(cv2.matchShapes(a, b, 1, 0.0))
+# print(cv2.matchShapes(a, c, 1, 0.0))
