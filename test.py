@@ -204,19 +204,19 @@ import numpy as np
 # cv2.imshow("res",res)
 # cv2.waitKey(0)
 
-img = cv2.imread('./debug/abc.jpg',0)
-
-_,img = cv2.threshold(img,50,255,cv2.THRESH_BINARY_INV)
-# cv2.imshow('demo',img_)
-# cv2.waitKey(0)
-image, contour, _ = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
-
-a, b, c = contour[5], contour[1], contour[4]
-image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-image_ = np.copy(image)
-cv2.drawContours(image_,contour,5,(0,0,255),5)
-cv2.drawContours(image_,contour,1,(0,255,0),5)
-cv2.drawContours(image_,contour,4,(255,0,0),5)
+# img = cv2.imread('./debug/abc.jpg',0)
+#
+# _,img = cv2.threshold(img,50,255,cv2.THRESH_BINARY_INV)
+# # cv2.imshow('demo',img_)
+# # cv2.waitKey(0)
+# image, contour, _ = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
+#
+# a, b, c = contour[5], contour[1], contour[4]
+# image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+# image_ = np.copy(image)
+# cv2.drawContours(image_,contour,5,(0,0,255),5)
+# cv2.drawContours(image_,contour,1,(0,255,0),5)
+# cv2.drawContours(image_,contour,4,(255,0,0),5)
 
 # cv2.imshow('demo',image_)
 # cv2.waitKey(0)
@@ -234,11 +234,43 @@ cv2.drawContours(image_,contour,4,(255,0,0),5)
 # x,y,radius = np.int0(x),np.int0(y),np.int0(radius)
 # cv2.circle(image,(x,y),radius,(0,0,255),5)
 # approx = cv2.approxPolyDP(contour[0],3,True)
-approx = cv2.convexHull(b)
-cv2.polylines(image, [approx], True , (0,0,255), 4)
-cv2.imshow('rect',image)
-cv2.waitKey(0)
+# approx = cv2.convexHull(b)
+# cv2.polylines(image, [approx], True , (0,0,255), 4)
+# cv2.imshow('rect',image)
+# cv2.waitKey(0)
 
 # print(cv2.matchShapes(a, a, 1, 0.0))
 # print(cv2.matchShapes(a, b, 1, 0.0))
 # print(cv2.matchShapes(a, c, 1, 0.0))
+
+# img = scipy.misc.face(gray=False)
+#
+# plt.bar(img.ravel(),16,(0,256))
+# plt.show()
+
+# name_list = ['Monday', 'Tuesday', 'Friday', 'Sunday']
+# num_list = [1.5, 0.6, 7.8, 6]
+# num_list1 = [1, 2, 3, 1]
+# x = list(range(len(num_list)))
+# total_width, n = 0.8, 2
+# width = total_width / n
+#
+# plt.plot(x, num_list)
+# # for i in range(len(x)):
+# #     x[i] = x[i] + width
+# # plt.bar(x, num_list1, width=width, label='girl', tick_label=name_list, fc='r')
+# plt.legend()
+# plt.show()
+
+# img = cv2.imread('./debug/hist.jpg',0)
+# mask_img = np.zeros(img.shape,np.uint8)
+# # mask_img[:200, :200] = 255
+# cv2.rectangle(mask_img,(0,0),(200,200),(255,255,255),-1)
+# print(mask_img.shape)
+# # cv2.imshow("demo",mask_img)
+# # cv2.waitKey(0)
+# hist = cv2.calcHist([img],[0],mask_img,[256],[0,256])
+#
+# plt.plot(hist)
+# plt.show()
+
