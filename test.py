@@ -262,15 +262,106 @@ import numpy as np
 # plt.legend()
 # plt.show()
 
-# img = cv2.imread('./debug/hist.jpg',0)
-# mask_img = np.zeros(img.shape,np.uint8)
-# # mask_img[:200, :200] = 255
-# cv2.rectangle(mask_img,(0,0),(200,200),(255,255,255),-1)
-# print(mask_img.shape)
-# # cv2.imshow("demo",mask_img)
-# # cv2.waitKey(0)
-# hist = cv2.calcHist([img],[0],mask_img,[256],[0,256])
+# 图像处理
+img = cv2.imread('./debug/road.png',1)
+h,w = img.shape[:2]
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+_,thres = cv2.threshold(gray,200,255,cv2.THRESH_BINARY)
+# hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
 #
-# plt.plot(hist)
+gray_ = cv2.cvtColor(thres,cv2.COLOR_GRAY2BGR)
+
+point_res = np.array([[410 + 1,346],[551,346],[293,432],[684,427]],dtype=np.float32())
+point_dst = np.array([[w * 4/7,h * 4/7],[w * 5/7,h * 4/7],[w * 4/7,h * 6/7],[w * 5/7,h * 6/7]],dtype=np.float32())
+M = cv2.getPerspectiveTransform(point_res, point_dst)
+res= cv2.warpPerspective(img, M,(w,h))
+res_gray = cv2.warpPerspective(gray_, M,(w,h))
+
+res_gray = cv2.Canny(res_gray,200,30)
+res_gray = cv2.cvtColor(res_gray,cv2.COLOR_GRAY2BGR)
+# print(res_gray.shape)
+# plt.imshow(res_gray)
 # plt.show()
+res_gray_ = np.copy(res_gray)
+# def nothing(x):
+#     pass
+#
+# cv2.namedWindow('hough')
+# cv2.createTrackbar("param1", "hough", 22, 200, nothing)
+# cv2.createTrackbar("param2", "hough", 1, 200, nothing)
+# cv2.createTrackbar("param3", "hough", 20, 200, nothing)
+# cv2.createTrackbar("param4", "hough", 80, 200, nothing)
+#
+# while(True):
+#     hough_res = np.copy(res_gray_)
+#     param1 = cv2.getTrackbarPos("param1","hough")
+#     param2 = cv2.getTrackbarPos("param1","hough")
+#     param3 = cv2.getTrackbarPos("param1","hough")
+#     param4 = cv2.getTrackbarPos("param1","hough")
+#     lines = cv2.HoughLinesP(res_gray[:,:,0],
+#                             param1 ,
+#                             np.pi / 180 ,
+#                             param2,
+#                             minLineLength= param3,
+#                             maxLineGap= param4)
+lines = cv2.HoughLinesP(res_gray[:,:,0], 23 , np.pi / 180 ,1,minLineLength= 20,maxLineGap= 80)
+print(len(lines))
+for line in lines:
+    x1,y1,x2,y2 = line[0]
+    cv2.line(res_gray,(x1,y1),(x2,y2),(0,255,0),2,lineType=cv2.LINE_AA)
+# hough_res_ = cv2.cvt
+
+# print(lines.shape)
+lines = np.squeeze(lines,axis=1)
+# print(lines.shape)
+_,lines_, = np.split(lines,[2],1)
+x,y = 0,0
+print(lines_[:,0])
+print(np.where(lines_[:,0] < w //2))
+print(lines_.shape)
+x_,y_ = np.split(lines_,[1],1)
+# print(x_.shape)
+np.squeeze(x_,axis=1)
+# print(x_.shape)
+np.squeeze(y_,axis=1)
+# print(y_.shape)
+# i = 0
+for i in range(len(lines_)):
+    x1,y1 = x_[i],y_[i]
+    # x1,y1 = x_[i],y[i]
+    if y1 == min(lines_[:,1]):
+    # if x1 == min(x_):
+        print('mins:',x1)
+        cv2.rectangle(res_gray,(x1,y1),(w * 5//7,h * 6//7),(0,255,255),2,lineType=cv2.LINE_AA)
+
+
+
+dst = np.hstack((res,res_gray))
+cv2.imshow("hough",dst)
+cv2.waitKey(0)
+# if cv2.waitKey(1) == 27:
+#     break
+    # plt.imshow(res,cmap='gray')
+
+
+
+
+# 视频处理
+# video = cv2.VideoCapture('./debug/cv2_white_lane.mp4')
+#
+#
+#
+#
+# while(True):
+#     _,capture = video.read()
+#
+#
+#
+#
+#     cv2.imshow('demo',capture)
+#     if cv2.waitKey(30) == 27:
+#         # cv2.imwrite('./debug/road.png', capture)
+#         break
+
+
 
